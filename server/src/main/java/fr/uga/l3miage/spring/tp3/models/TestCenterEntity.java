@@ -2,6 +2,7 @@ package fr.uga.l3miage.spring.tp3.models;
 
 import fr.uga.l3miage.spring.tp3.enums.TestCenterCode;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.util.Set;
