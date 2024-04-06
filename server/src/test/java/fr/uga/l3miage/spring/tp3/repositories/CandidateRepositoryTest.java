@@ -21,8 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CandidateRepositoryTest {
     @Autowired
     private CandidateRepository candidateRepository;
+
     @Autowired
     private TestCenterRepository testCenterRepository;
+
     @Autowired CandidateEvaluationGridRepository candidateEvaluationGridRepository;
 
     @BeforeEach
@@ -32,7 +34,7 @@ class CandidateRepositoryTest {
         testCenterRepository.deleteAll();
     }
         @Test
-        void testRequestfindAllByTestCenterEntityCode(){
+        void testFindAllByTestCenterEntityCode(){
             //given
             TestCenterEntity test1 = TestCenterEntity
                     .builder()
@@ -76,7 +78,7 @@ class CandidateRepositoryTest {
         }
 
     @Test
-    void findAllByCandidateEvaluationGridEntitiesGradeLessThan(){
+    void testFindAllByCandidateEvaluationGridEntitiesGradeLessThan(){
         //given
         TestCenterEntity test1 = TestCenterEntity
                 .builder()
@@ -106,8 +108,8 @@ class CandidateRepositoryTest {
         candidateRepository.save(candidate1);
 
         // when
-        Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(16);
-        Set<CandidateEntity> candidateEntitiesNoResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(2);
+        Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(8);
+        Set<CandidateEntity> candidateEntitiesNoResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(10);
 
 
         //then
@@ -117,8 +119,7 @@ class CandidateRepositoryTest {
     }
 
         @Test
-        void findAllByHasExtraTimeFalseAndBirthDateBefore(){
-            LocalDate cutoffDate = LocalDate.of(2000, 1, 1); // exemple de date de référence
+        void testFindAllByHasExtraTimeFalseAndBirthDateBefore(){
 
             CandidateEntity candidate1 = CandidateEntity
                     .builder()
@@ -132,7 +133,7 @@ class CandidateRepositoryTest {
                     .builder()
                     .firstname("Nicolas")
                     .email("nicolas@etu.univ-grenoble-alpes.fr")
-                    .birthDate(LocalDate.of(2001,2,11))
+                    .birthDate(LocalDate.of(2000,2,11))
                     .hasExtraTime(false)
                     .build();
 
@@ -140,12 +141,14 @@ class CandidateRepositoryTest {
             candidateRepository.save(candidate2);
 
             // when
-            Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(cutoffDate);
+            Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.of(2000, 9, 1));
+            Set<CandidateEntity> noCandidateEntitiesResponses = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.of(1989, 1, 1));
 
             //then
             assertThat(candidateEntitiesResponses).hasSize(1);
-            assertThat(candidateEntitiesResponses.stream().findFirst().get().getBirthDate()).isBefore(cutoffDate);
-        }
+            assertThat(candidateEntitiesResponses.stream().findFirst().get().getBirthDate()).isBefore(LocalDate.of(2000, 9, 1));
+            assertThat(noCandidateEntitiesResponses).hasSize(0);
+    }
 
 
     }

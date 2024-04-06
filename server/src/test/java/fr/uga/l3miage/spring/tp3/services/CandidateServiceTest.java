@@ -6,7 +6,7 @@ import fr.uga.l3miage.spring.tp3.exceptions.technical.CandidateNotFoundException
 import fr.uga.l3miage.spring.tp3.models.CandidateEntity;
 import fr.uga.l3miage.spring.tp3.models.CandidateEvaluationGridEntity;
 import fr.uga.l3miage.spring.tp3.models.ExamEntity;
-import org.h2.command.dml.MergeUsing;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Set;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -28,51 +29,57 @@ public class CandidateServiceTest {
     @MockBean
     private CandidateComponent candidateComponent;
 
+    @MockBean
+    private CandidateEvaluationGridEntity candidateEvaluationGridEntity;
+
+
     @Test
     void testGetCandidateAverage() throws CandidateNotFoundException{
-        ExamEntity examEntity = ExamEntity
-                .builder()
-                .id(129L)
-                .name("IHM")
-                .weight(6)
+        ExamEntity IHM= ExamEntity.builder()
+                .weight(2)
+                .build();
+        ExamEntity VA= ExamEntity.builder()
+                .weight(1)
                 .build();
 
-        CandidateEvaluationGridEntity candidateEvaluationGrid = CandidateEvaluationGridEntity
+        CandidateEntity candidate = CandidateEntity
                 .builder()
-                .grade(10)
-                .examEntity(examEntity)
+                .lastname("Nicolas")
+                .email("nicolas@gmail.com")
                 .build();
 
-        ExamEntity examEntity1 = ExamEntity
+        CandidateEvaluationGridEntity grid1=CandidateEvaluationGridEntity
                 .builder()
-                .id(129L)
-                .name("Va")
-                .weight(4)
+                .grade(10.0)
+                .examEntity(IHM)
+                .candidateEntity(candidate)
                 .build();
 
-        CandidateEvaluationGridEntity candidateEvaluationGrid1 = CandidateEvaluationGridEntity
+        CandidateEvaluationGridEntity grid2=CandidateEvaluationGridEntity
                 .builder()
-                .grade(12)
-                .examEntity(examEntity)
+                .grade(17.0)
+                .examEntity(VA)
+                .candidateEntity(candidate)
                 .build();
 
+        // ajouter les evaluations au candidat
+        candidate.setCandidateEvaluationGridEntities(Set.of(grid1, grid2));
+        when(candidateComponent.getCandidatById(anyLong())).thenReturn(candidate);
 
-        CandidateEntity candidateEntity = CandidateEntity
-                .builder()
-                .id(1L)
-                .candidateEvaluationGridEntities(Set.of(candidateEvaluationGrid, candidateEvaluationGrid1))
-                .build();
+        // when
+        double response= candidateService.getCandidateAverage((long)888);
+        double expectedAverage = ((grid1.getGrade() * grid1.getExamEntity().getWeight()) +
+                (grid2.getGrade() * grid2.getExamEntity().getWeight())) /
+                (grid1.getExamEntity().getWeight() + grid2.getExamEntity().getWeight());
+        //then
+        assertThat(response).isEqualTo(expectedAverage);
 
-        when(candidateComponent.getCandidatById(anyLong())).thenReturn(candidateEntity);
-
-
-        assert(candidateService.getCandidateAverage(129L) == 10);
     }
     @Test
     void testGetCandidateAverageNotFound() throws CandidateNotFoundException {
 
         when(candidateComponent.getCandidatById(anyLong())).thenThrow(CandidateNotFoundException.class);
-        assertThrows(CandidateNotFoundRestException.class, () -> candidateService.getCandidateAverage(1L));
+        assertThrows(CandidateNotFoundRestException.class, () -> candidateService.getCandidateAverage(anyLong()));
     }
 
 }

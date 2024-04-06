@@ -11,12 +11,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @AutoConfigureTestDatabase
@@ -32,33 +33,56 @@ public class CandidateComponentTest {
     CandidateEvaluationGridRepository candidateEvaluationGridRepository;
 
     @Test
-    void candidateNotFound() {
-        // Given
-        when(candidateRepository.findById(anyLong())).thenReturn(Optional.empty());
+    void getAllEliminatedCandidateIsEmpty() {
+        //given
+        when(candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(anyDouble())).thenReturn(new HashSet<>());
 
-        // Then - When
-        assertThrows(CandidateNotFoundException.class, () -> candidateComponent.getCandidatById(2147483647L));
+        //when
+        Set<CandidateEntity> response = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(4.0);
 
-        // Given
-        CandidateEntity candidateEntity = CandidateEntity
+        //then
+        assertThat(response).isEmpty();
+    }
+    @Test
+    void getAllEliminatedCandidateIsNotEmpty() {
+        CandidateEntity candidate1= CandidateEntity
                 .builder()
-                .firstname("alexandre")
-                .email("alexandre@gmail.com")
+                .lastname("Nicolas")
+                .email("nicolas@gmail.com")
                 .build();
 
 
-        CandidateEvaluationGridEntity evaluationGridEntity = CandidateEvaluationGridEntity.builder().candidateEntity(candidateEntity).grade(5.0).build();
-        Set<CandidateEvaluationGridEntity> eliminatedCandidates = Set.of(evaluationGridEntity);
+        Set<CandidateEntity> candidate1Set = Set.of(candidate1);
+        //given
+        when(candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(anyDouble())).thenReturn(candidate1Set);
+
+        //when
+        Set<CandidateEntity> response = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(5.0);
+
+        //then
+        assertThat(response).isNotEmpty();
+    }
+    @Test
+    void getCandidateByIdNotFound() {
+        //given
+        when(candidateRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        //Then - When
+        assertThrows(CandidateNotFoundException.class,()->candidateComponent.getCandidatById(anyLong()));
+    }
 
 
-        when(candidateEvaluationGridRepository.findAllByGradeIsLessThanEqual(5)).thenReturn(eliminatedCandidates);
+    @Test
+    void getCandidateByIdFound() {
+        //given
+        CandidateEntity candidate1= CandidateEntity
+                .builder()
+                .lastname("Nicolas")
+                .email("nicolas@gmail.com")
+                .build();
+        when(candidateRepository.findById(anyLong())).thenReturn(Optional.of(candidate1));
+        assertDoesNotThrow(()->candidateComponent.getCandidatById(anyLong()));
 
-        // When
-        Set<CandidateEntity> result = candidateComponent.getAllEliminatedCandidate();
-
-        // Then
-        assertDoesNotThrow(() -> candidateComponent.getAllEliminatedCandidate());
-        assertTrue(result.contains(candidateEntity));
     }
 
 
