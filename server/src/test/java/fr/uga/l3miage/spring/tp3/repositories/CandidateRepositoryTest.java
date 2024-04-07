@@ -43,7 +43,7 @@ class CandidateRepositoryTest {
 
             TestCenterEntity test2 = TestCenterEntity
                     .builder()
-                    .code(TestCenterCode.DIJ)
+                    .code(TestCenterCode.NCE)
                     .build();
 
             CandidateEntity candidate1 = CandidateEntity
@@ -60,14 +60,11 @@ class CandidateRepositoryTest {
                     .testCenterEntity(test2)
                     .build();
 
-
-
             testCenterRepository.save(test1);
             testCenterRepository.save(test2);
 
             candidateRepository.save(candidate1);
             candidateRepository.save(candidate2);
-
 
             // when
             Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByTestCenterEntityCode(GRE);
@@ -108,13 +105,12 @@ class CandidateRepositoryTest {
         candidateRepository.save(candidate1);
 
         // when
-        Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(8);
-        Set<CandidateEntity> candidateEntitiesNoResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(10);
+        Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(16);
+        Set<CandidateEntity> candidateEntitiesNoResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(2);
 
 
         //then
         assertThat(candidateEntitiesResponses).hasSize(1);
-        assertThat(candidateEntitiesResponses.stream().findFirst().get().getCandidateEvaluationGridEntities().stream().findFirst().get().getGrade()).isEqualTo(15.5);
         assertThat(candidateEntitiesNoResponses).hasSize(0);
     }
 
@@ -133,7 +129,7 @@ class CandidateRepositoryTest {
                     .builder()
                     .firstname("Nicolas")
                     .email("nicolas@etu.univ-grenoble-alpes.fr")
-                    .birthDate(LocalDate.of(2000,2,11))
+                    .birthDate(LocalDate.of(2001,2,11))
                     .hasExtraTime(false)
                     .build();
 

@@ -67,7 +67,7 @@ public class CandidateServiceTest {
         when(candidateComponent.getCandidatById(anyLong())).thenReturn(candidate);
 
         // when
-        double response= candidateService.getCandidateAverage((long)888);
+        double response= candidateService.getCandidateAverage(anyLong());
         double expectedAverage = ((grid1.getGrade() * grid1.getExamEntity().getWeight()) +
                 (grid2.getGrade() * grid2.getExamEntity().getWeight())) /
                 (grid1.getExamEntity().getWeight() + grid2.getExamEntity().getWeight());

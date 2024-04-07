@@ -23,6 +23,4 @@ public interface SessionEndpoints {
     @PostMapping("/create")
     SessionResponse createSession(@RequestBody SessionCreationRequest request);
 
-
-
 }

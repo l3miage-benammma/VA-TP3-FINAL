@@ -32,17 +32,17 @@ public class ExamComponentTest {
     @Test
     void testGetExamEntityByIdNotFound(){
         when(examRepository.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(ExamNotFoundException.class,()->examComponent.getAllById(Set.of(anyLong())));
+        assertThrows(ExamNotFoundException.class,()->examComponent.getAllById(Set.of(69L)));
     }
 
     @Test
     void testGetExamEntityByIdFound(){
         ExamEntity examEntity = ExamEntity.builder()
-                .id(1L)
+                .id(69L)
                 .weight(1)
                 .name("IHM")
                 .build();
         when(examRepository.findAllById(anySet())).thenReturn(List.of(examEntity));
-        assertDoesNotThrow(()->examComponent.getAllById(Set.of(anyLong())));
+        assertDoesNotThrow(()->examComponent.getAllById(Set.of(69L)));
     }
 }

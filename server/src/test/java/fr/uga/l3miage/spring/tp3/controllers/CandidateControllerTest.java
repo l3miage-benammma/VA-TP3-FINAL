@@ -1,14 +1,10 @@
 package fr.uga.l3miage.spring.tp3.controllers;
 
-import fr.uga.l3miage.spring.tp3.components.CandidateComponent;
 import fr.uga.l3miage.spring.tp3.models.CandidateEntity;
 import fr.uga.l3miage.spring.tp3.models.CandidateEvaluationGridEntity;
 import fr.uga.l3miage.spring.tp3.models.ExamEntity;
-import fr.uga.l3miage.spring.tp3.repositories.CandidateEvaluationGridRepository;
 import fr.uga.l3miage.spring.tp3.repositories.CandidateRepository;
-
 import org.junit.jupiter.api.AfterEach;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -23,7 +19,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 @AutoConfigureTestDatabase
 @AutoConfigureWebTestClient
@@ -48,8 +43,8 @@ public class CandidateControllerTest {
         final HashMap<String,Long> urlParam = new HashMap<>();
         CandidateEntity candidateEntity = CandidateEntity
                 .builder()
-                .id(1L)
-                .email("")
+                .id(69L)
+                .email("nicolas@gmail.com")
                 .build();
         ExamEntity examEntity = ExamEntity
                 .builder()
@@ -63,7 +58,7 @@ public class CandidateControllerTest {
         candidateEntity.setCandidateEvaluationGridEntities(Set.of(candidateEvaluationGridEntity2));
         candidateRepository.save(candidateEntity);
 
-        urlParam.put("idCandidate", 1L);
+        urlParam.put("idCandidate", 69L);
         ResponseEntity<Double> rep = testRestTemplate.exchange("/api/candidates/{idCandidate}/average", HttpMethod.GET, new HttpEntity<>(null, headers), Double.class,urlParam);
         assertThat(rep.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -76,5 +71,6 @@ public class CandidateControllerTest {
         ResponseEntity<ChangeSetPersister.NotFoundException> rep = testRestTemplate.exchange("/api/candidates/{idCandidate}", HttpMethod.GET, new HttpEntity<>(null, headers), ChangeSetPersister.NotFoundException.class, urlParam);
         assertThat(rep.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
 
 }

@@ -5,6 +5,7 @@ import fr.uga.l3miage.spring.tp3.request.SessionCreationRequest;
 import fr.uga.l3miage.spring.tp3.responses.SessionResponse;
 import fr.uga.l3miage.spring.tp3.services.SessionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -16,4 +17,5 @@ public class SessionController implements SessionEndpoints {
     public SessionResponse createSession(SessionCreationRequest request) {
         return sessionService.createSession(request);
     }
+
 }

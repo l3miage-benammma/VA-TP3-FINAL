@@ -1,11 +1,16 @@
 package fr.uga.l3miage.spring.tp3.components;
 
 import fr.uga.l3miage.spring.tp3.models.EcosSessionEntity;
+import fr.uga.l3miage.spring.tp3.models.EcosSessionProgrammationStepEntity;
 import fr.uga.l3miage.spring.tp3.repositories.EcosSessionProgrammationRepository;
 import fr.uga.l3miage.spring.tp3.repositories.EcosSessionProgrammationStepRepository;
 import fr.uga.l3miage.spring.tp3.repositories.EcosSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -20,4 +25,8 @@ public class SessionComponent {
         ecosSessionProgrammationRepository.save(entity.getEcosSessionProgrammationEntity());
         return ecosSessionRepository.save(entity);
     }
+
+
+
+
 }

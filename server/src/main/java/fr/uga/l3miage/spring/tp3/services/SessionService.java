@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Service
 @RequiredArgsConstructor
 public class SessionService {
@@ -47,5 +49,8 @@ public class SessionService {
         }catch (RuntimeException | ExamNotFoundException e){
             throw new CreationSessionRestException(e.getMessage());
         }
+
+
+
     }
 }
