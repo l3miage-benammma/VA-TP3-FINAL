@@ -2,7 +2,7 @@ package fr.uga.l3miage.spring.tp3.services;
 
 import fr.uga.l3miage.spring.tp3.components.ExamComponent;
 import fr.uga.l3miage.spring.tp3.components.SessionComponent;
-import fr.uga.l3miage.spring.tp3.enums.SessionStatus;
+import fr.uga.l3miage.spring.tp3.responses.enums.SessionStatus;
 import fr.uga.l3miage.spring.tp3.exceptions.rest.CreationSessionRestException;
 import fr.uga.l3miage.spring.tp3.exceptions.technical.ExamNotFoundException;
 import fr.uga.l3miage.spring.tp3.mappers.SessionMapper;
@@ -15,10 +15,9 @@ import fr.uga.l3miage.spring.tp3.responses.SessionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class SessionService {
     private final SessionMapper sessionMapper;
     private final ExamComponent examComponent;
     private final SessionComponent sessionComponent;
+
 
     public SessionResponse createSession(SessionCreationRequest sessionCreationRequest){
         try {

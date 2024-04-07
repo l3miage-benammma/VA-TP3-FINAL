@@ -17,4 +17,5 @@ public class SessionResponse {
     private Set<ExamResponse> examEntities;
 
     private EcosSessionProgrammationResponse ecosSessionProgrammationEntity;
+
 }
